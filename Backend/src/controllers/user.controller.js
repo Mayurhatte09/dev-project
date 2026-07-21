@@ -1,4 +1,4 @@
-const User = require("../models/user.model.sequelize");
+const User = require("../models/user.model");
 
 class UserController {
   // Create User
@@ -77,7 +77,6 @@ class UserController {
   static async updateUser(req, res) {
     try {
       const { id } = req.params;
-
       const { name, email, password, department } = req.body;
 
       const user = await User.findByPk(id);

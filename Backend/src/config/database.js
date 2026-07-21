@@ -9,22 +9,16 @@ const sequelize = new Sequelize(
         port: process.env.DB_PORT,
         dialect: "mysql",
         logging: false,
-        pool: {
-            max: 10,
-            min: 0,
-            acquire: 30000,
-            idle: 10000,
-        },
     }
 );
 
 const connectDB = async () => {
     try {
         await sequelize.authenticate();
-        console.log("✅ Connected to MySQL RDS");
+        console.log("MySQL RDS Connected Successfully");
     } catch (error) {
-        console.error("❌ Database Connection Failed");
-        console.error(error.message);
+        console.error("Database Connection Failed");
+        console.error(error);
         process.exit(1);
     }
 };

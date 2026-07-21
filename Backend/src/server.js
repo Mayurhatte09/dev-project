@@ -15,21 +15,21 @@ app.use("/api/users", userRoute);
 
 const PORT = process.env.PORT || 3000;
 
-const startServer = async () => {
+async function startServer() {
   try {
     await connectDB();
 
     await sequelize.sync();
 
-    console.log("Database synchronized.");
+    console.log("Database Synced");
 
     app.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`);
+      console.log(`Server running on port ${PORT}`);
     });
+
   } catch (error) {
-    console.error(error);
-    process.exit(1);
+    console.log(error);
   }
-};
+}
 
 startServer();
