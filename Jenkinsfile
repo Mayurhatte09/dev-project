@@ -7,7 +7,7 @@ pipeline {
         BACKEND_IMAGE = "production-grade-app-deployment-backend"
         FRONTEND_IMAGE = "production-grade-app-deployment-frontend"
 
-        IMAGE_TAG = "${BUILD_NUMBER}"
+        TAG = "v9"
 
         NAMESPACE = "production-grade-app"
     }
@@ -27,7 +27,6 @@ pipeline {
                     usernameVariable: 'DOCKER_USER',
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
-
                     bat '''
                     docker login -u %DOCKER_USER% -p %DOCKER_PASS%
                     '''
@@ -38,7 +37,7 @@ pipeline {
         stage('Build Backend Image') {
             steps {
                 bat '''
-                docker build -t %DOCKER_USERNAME%/%BACKEND_IMAGE%:%IMAGE_TAG% Backend
+                docker build -t %DOCKER_USERNAME%/%BACKEND_IMAGE%:%TAG% Backend
                 '''
             }
         }
@@ -46,7 +45,7 @@ pipeline {
         stage('Build Frontend Image') {
             steps {
                 bat '''
-                docker build -t %DOCKER_USERNAME%/%FRONTEND_IMAGE%:%IMAGE_TAG% Frontend
+                docker build -t %DOCKER_USERNAME%/%FRONTEND_IMAGE%:%TAG% Frontend
                 '''
             }
         }
@@ -54,7 +53,7 @@ pipeline {
         stage('Push Backend Image') {
             steps {
                 bat '''
-                docker push %DOCKER_USERNAME%/%BACKEND_IMAGE%:%IMAGE_TAG%
+                docker push %DOCKER_USERNAME%/%BACKEND_IMAGE%:%TAG%
                 '''
             }
         }
@@ -62,7 +61,7 @@ pipeline {
         stage('Push Frontend Image') {
             steps {
                 bat '''
-                docker push %DOCKER_USERNAME%/%FRONTEND_IMAGE%:%IMAGE_TAG%
+                docker push %DOCKER_USERNAME%/%FRONTEND_IMAGE%:%TAG%
                 '''
             }
         }
@@ -71,47 +70,22 @@ pipeline {
             steps {
                 bat '''
                 kubectl apply -f kubernetes
+                kubectl rollout restart deployment/backend -n %NAMESPACE%
+                kubectl rollout restart deployment/frontend -n %NAMESPACE%
                 '''
             }
         }
 
-        stage('Update Backend Image') {
-            steps {
-                bat '''
-                kubectl set image deployment/backend backend=%DOCKER_USERNAME%/%BACKEND_IMAGE%:%IMAGE_TAG% -n %NAMESPACE%
-                '''
-            }
-        }
-
-        stage('Update Frontend Image') {
-            steps {
-                bat '''
-                kubectl set image deployment/frontend frontend=%DOCKER_USERNAME%/%FRONTEND_IMAGE%:%IMAGE_TAG% -n %NAMESPACE%
-                '''
-            }
-        }
-
-        stage('Verify Rollout') {
-            steps {
-                bat '''
-                kubectl rollout status deployment/backend -n %NAMESPACE%
-                kubectl rollout status deployment/frontend -n %NAMESPACE%
-                '''
-            }
-        }
-
-        stage('Verify Pods') {
+        stage('Verify Deployment') {
             steps {
                 bat '''
                 kubectl get pods -n %NAMESPACE%
                 '''
             }
         }
-
     }
 
     post {
-
         success {
             echo 'Pipeline completed successfully.'
         }
