@@ -1,4 +1,5 @@
 const User = require("../models/user.model");
+const { Op } = require("sequelize");
 
 class UserController {
   // Create User
@@ -35,14 +36,33 @@ class UserController {
     }
   }
 
-  // Get All Users
+  // Get All Users (With Pagination & Search)
   static async getAllUsers(req, res) {
     try {
-      const users = await User.findAll({
-        order: [["id", "ASC"]],
-      });
+      const { page = 1, limit = 5, search = '' } = req.query;
+      const offset = (page - 1) * limit;
 
-      res.status(200).json(users);
+      const queryOptions = {
+        order: [["id", "ASC"]],
+        limit: parseInt(limit),
+        offset: parseInt(offset),
+      };
+
+      if (search) {
+        queryOptions.where = {
+          [Op.or]: [
+            { name: { [Op.like]: `%${search}%` } },
+            { email: { [Op.like]: `%${search}%` } }
+          ]
+        };
+      }
+
+      const { rows, count } = await User.findAndCountAll(queryOptions);
+
+      res.status(200).json({
+        data: rows,
+        totalItems: count
+      });
     } catch (error) {
       console.error(error);
       res.status(500).json({

@@ -11,20 +11,20 @@ import { CommonModule } from '@angular/common';
   selector: 'app-user-table',
   templateUrl: './user-table.component.html',
   styleUrls: ['./user-table.component.scss'],
-  standalone:true,
-  imports:[SharedImportsModule,CommonModule]
+  standalone: true,
+  imports: [SharedImportsModule, CommonModule]
 })
 export class UserTableComponent implements OnInit {
-  displayedColumns: string[] = ['_id', 'name', 'email', 'actions'];
+  displayedColumns: string[] = ['id', 'name', 'email', 'actions']; // ✅ Fixed _id to id
   dataSource = new MatTableDataSource<any>([]);
   totalItems = 0;
   pageSize = 5;
   pageIndex = 0;
-  searchQuery: string = '';  // ✅ new
+  searchQuery: string = '';
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  constructor(private userService: UserService, private dialog: MatDialog) {}
+  constructor(private userService: UserService, private dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.loadUsers();
@@ -57,46 +57,46 @@ export class UserTableComponent implements OnInit {
     this.loadUsers();
   }
 
-openAddDialog(): void {
-  const dialogRef = this.dialog.open(UserDialogComponent, {
-    width: '400px'
-  });
+  openAddDialog(): void {
+    const dialogRef = this.dialog.open(UserDialogComponent, {
+      width: '400px'
+    });
 
-  dialogRef.afterClosed().subscribe(result => {
-    if (result) {
-      this.userService.createUser(result).subscribe({
-        next: () => {
-          this.loadUsers();
-        },
-        error: (err) => {
-          console.error('Create user failed', err);
-        }
-      });
-    }
-  });
-}
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.userService.createUser(result).subscribe({
+          next: () => {
+            this.loadUsers();
+          },
+          error: (err) => {
+            console.error('Create user failed', err);
+          }
+        });
+      }
+    });
+  }
 
-openEditDialog(user: any): void {
-  const dialogRef = this.dialog.open(UserDialogComponent, {
-    width: '400px',
-    data: user
-  });
+  openEditDialog(user: any): void {
+    const dialogRef = this.dialog.open(UserDialogComponent, {
+      width: '400px',
+      data: user
+    });
 
-  dialogRef.afterClosed().subscribe(result => {
-    if (result) {
-      const id = user._id ?? result._id;
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        const id = user.id ?? result.id; // ✅ Fixed _id to id
 
-      this.userService.updateUser(id, result).subscribe({
-        next: () => {
-          this.loadUsers();
-        },
-        error: (err) => {
-          console.error('Update user failed', err);
-        }
-      });
-    }
-  });
-}
+        this.userService.updateUser(id, result).subscribe({
+          next: () => {
+            this.loadUsers();
+          },
+          error: (err) => {
+            console.error('Update user failed', err);
+          }
+        });
+      }
+    });
+  }
 
 
   deleteUser(id: string): void {
