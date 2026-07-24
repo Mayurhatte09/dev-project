@@ -1,32 +1,28 @@
-#  Production Grade Application Deployment
+<h1 align="center">Production Grade Application Deployment</h1>
 
-```{=html}
 <p align="center">
-```
-An end-to-end DevOps project demonstrating CI/CD, containerization,
-Kubernetes deployment, AWS RDS integration, and monitoring with
-Prometheus & Grafana.
-```{=html}
+  An end-to-end DevOps project demonstrating CI/CD, containerization, Kubernetes deployment, AWS RDS integration, and monitoring with Prometheus & Grafana.
 </p>
-```
-##  Project Overview
 
-This project automates the deployment of a full-stack application using
-modern DevOps practices.
+## Project Overview
+
+This project automates the deployment of a full-stack application using modern DevOps practices.
+
+---
 
 ### Tech Stack
 
-  Category         Technology
-  ---------------- ---------------------
-  Frontend         Angular
-  Backend          Node.js
-  Database         MySQL (AWS RDS)
-  CI/CD            Jenkins
-  Containers       Docker
-  Registry         Docker Hub
-  Orchestration    Kubernetes
-  Monitoring       Prometheus, Grafana
-  Source Control   Git & GitHub
+| Category | Technology |
+| :--- | :--- |
+| **Frontend** | Angular |
+| **Backend** | Node.js |
+| **Database** | MySQL (AWS RDS) |
+| **CI/CD** | Jenkins |
+| **Containers** | Docker |
+| **Registry** | Docker Hub |
+| **Orchestration** | Kubernetes |
+| **Monitoring** | Prometheus, Grafana |
+| **Source Control** | Git & GitHub |
 
 ------------------------------------------------------------------------
 
